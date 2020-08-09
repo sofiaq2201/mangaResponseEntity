@@ -3,6 +3,7 @@ package com.sofiaq.mangarestapi.controller;
 import com.sofiaq.mangarestapi.domain.Manga;
 import com.sofiaq.mangarestapi.service.MangaService;
 import java.util.List;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,26 +28,33 @@ public class MangaController {
     
     @GetMapping("/all")
     public ResponseEntity<List<Manga>> obtenerMangas(){
-        return mangaService.buscarTodos();
+        List<Manga> mangas = mangaService.buscarTodos();
+        if(mangas.isEmpty()){
+             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }else{
+             return new ResponseEntity<>(mangas, HttpStatus.OK);
+        }
     }
     
     @GetMapping("/{id}")
     public ResponseEntity<Manga> getMangaById(@PathVariable("id") int id){
-        return mangaService.mangaById(id);
+        return new ResponseEntity<>(mangaService.mangaById(id), HttpStatus.OK);
     }
     
     @PostMapping()
     public ResponseEntity<Manga> guardarManga(@RequestBody Manga manga){
-        return mangaService.guardarManga(manga);
+        Manga _manga = mangaService.guardarManga(manga);
+        return new ResponseEntity<>(_manga, HttpStatus.CREATED);
     }
     
     @PutMapping("/{id}")
     public ResponseEntity<Manga> actualizarManga(@PathVariable("id") int id, @RequestBody Manga m){
-        return mangaService.actualizarManga(id, m);
+        return new ResponseEntity<>(mangaService.actualizarManga(id, m), HttpStatus.OK);
     }
     
     @DeleteMapping("/{id}")
     public ResponseEntity<Manga> eliminarManga(@PathVariable int id){
-        return mangaService.eliminarManga(id);
+        mangaService.eliminarManga(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

@@ -18,42 +18,35 @@ public class MangaService {
         this.mangaRepository = mangaRepository;
     }
   
-    public ResponseEntity<List<Manga>> buscarTodos(){
-        List<Manga> mangas = (List<Manga>) mangaRepository.findAll();
-        if(mangas.isEmpty()){
-             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }else{
-             return new ResponseEntity<>(mangas, HttpStatus.OK);
-        }
+    public List<Manga> buscarTodos(){
+       return mangaRepository.findAll();
     }
     
-    public ResponseEntity<Manga> guardarManga(Manga manga){
-        return new ResponseEntity<>(mangaRepository.save(manga), HttpStatus.CREATED);
+    public Manga guardarManga(Manga manga){
+        return mangaRepository.save(manga);
     }
     
-    public ResponseEntity<Manga> actualizarManga(int id, Manga m){
+    public Manga actualizarManga(int id, Manga m){
         Manga manga = mangaRepository.findById(id)
                       .orElseThrow(()-> new ResourceNotFoundException("no existe manga con dicho id"));
         manga.setNombre(m.getNombre());
         manga.setAutor(m.getAutor());
         manga.setDescripcion(m.getDescripcion());
         manga.setImagenUrl(m.getImagenUrl());
-        
-        
-        return new ResponseEntity<>(mangaRepository.save(manga), HttpStatus.OK);
+        return manga;
     }
     
-    public ResponseEntity<Manga> mangaById(int id){
+    public Manga mangaById(int id){
         Manga manga = mangaRepository.findById(id)
                       .orElseThrow( ()-> new ResourceNotFoundException("No se encontró manga"));
-        return new ResponseEntity<>(manga, HttpStatus.OK);
+        return manga;
     }
     
-    public ResponseEntity<Manga> eliminarManga(int id){
+    public void eliminarManga(int id){
         Manga manga = mangaRepository.findById(id)
                     .orElseThrow(()-> new ResourceNotFoundException("No se pudo eliminar manga"));
         mangaRepository.delete(manga);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        
     }
     
 }
